@@ -12,9 +12,7 @@
         .form-group { margin-bottom: 15px; }
         label { font-weight: bold; display: block; margin-bottom: 5px; color: #333; font-size: 14px; }
         input[type="text"], textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
-        textarea { height: 80px; resize: vertical; }
-        .row { display: flex; gap: 10px; }
-        .row .form-group { flex: 1; }
+        textarea { height: 100px; resize: vertical; }
         .checkbox-group { display: flex; align-items: center; gap: 10px; }
         button { width: 100%; padding: 12px; background: #8B0000; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 15px; }
         button:hover { background: #500000; }
@@ -48,35 +46,21 @@
         <label for="showToast" style="margin:0;">Aktifkan Pesan Toast di Aplikasi</label>
     </div>
 
-    <!-- SEKSI TENTANG KAMI & PROMOSI LINK -->
-    <h3>ℹ️ Pengaturan Tentang Kami & Link</h3>
+    <!-- SEKSI TENTANG KAMI -->
+    <h3>ℹ️ Pengaturan Halaman Tentang Kami</h3>
     <div class="form-group">
-        <label>Deskripsi Aplikasi / Info Dev:</label>
-        <textarea id="aboutText" placeholder="TTS Budaya Nusantara adalah..."></textarea>
+        <label>Teks Tentang Permainan (Deskripsi):</label>
+        <textarea id="aboutText" placeholder="Ketik deskripsi permainan..."></textarea>
     </div>
 
-    <!-- TOMBOL LINK 1 -->
-    <div class="row">
-        <div class="form-group">
-            <label>Nama Tombol 1:</label>
-            <input type="text" id="btn1Name" placeholder="Misal: TikTok / App Lain">
-        </div>
-        <div class="form-group">
-            <label>URL / Link Tombol 1:</label>
-            <input type="text" id="btn1Url" placeholder="https://...">
-        </div>
+    <div class="form-group">
+        <label>Nama Tombol Website / Promo:</label>
+        <input type="text" id="btn1Name" placeholder="Contoh: KUNJUNGI WEBSITE HOMEDEV">
     </div>
 
-    <!-- TOMBOL LINK 2 -->
-    <div class="row">
-        <div class="form-group">
-            <label>Nama Tombol 2:</label>
-            <input type="text" id="btn2Name" placeholder="Misal: Website / Blog">
-        </div>
-        <div class="form-group">
-            <label>URL / Link Tombol 2:</label>
-            <input type="text" id="btn2Url" placeholder="https://...">
-        </div>
+    <div class="form-group">
+        <label>URL / Link Website Resmi:</label>
+        <input type="text" id="btn1Url" placeholder="Contoh: https://sku9630.github.io/HomeDev">
     </div>
 
     <button onclick="simpanData()">Simpan & Broadcast Ke App</button>
@@ -87,7 +71,7 @@
     // URL Database Firebase Kamu
     const FIREBASE_URL = "https://updateadmin-default-rtdb.asia-southeast1.firebasedatabase.app/.json";
 
-    // 1. Load Data Otomatis Saat Web Dibuka
+    // 1. Load Data Otomatis Saat Halaman Admin Dibuka
     window.onload = function() {
         document.getElementById('status').innerText = "Mengecek data Firebase...";
         fetch(FIREBASE_URL)
@@ -99,12 +83,10 @@
                     document.getElementById('toastMsg').value = data.toast_message || "";
                     document.getElementById('showToast').checked = (data.show_toast === 1);
                     
-                    // Load data Tentang Kami & Dynamic Links
-                    document.getElementById('aboutText').value = data.about_text || "Game TTS Edukasi Budaya Nusantara.";
-                    document.getElementById('btn1Name').value = data.btn1_name || "TikTok";
-                    document.getElementById('btn1Url').value = data.btn1_url || "";
-                    document.getElementById('btn2Name').value = data.btn2_name || "Website";
-                    document.getElementById('btn2Url').value = data.btn2_url || "";
+                    // Load data Tentang Kami
+                    document.getElementById('aboutText').value = data.about_text || "TTS Budaya Nusantara adalah media edukasi interaktif berbentuk teka-teki silang yang dirancang untuk menguji sekaligus memperluas wawasan mengenai keanekaragaman budaya Indonesia.\n\nDari adat istiadat, tarian daerah, alat musik tradisional, hingga sejarah Nusantara, game ini mengajak Anda belajar budaya dengan cara yang seru dan menyenangkan!";
+                    document.getElementById('btn1Name').value = data.btn1_name || "KUNJUNGI WEBSITE HOMEDEV";
+                    document.getElementById('btn1Url').value = data.btn1_url || "https://sku9630.github.io/HomeDev";
 
                     document.getElementById('status').innerText = "Data berhasil dimuat!";
                     document.getElementById('status').style.color = "green";
@@ -126,12 +108,10 @@
             toast_message: document.getElementById('toastMsg').value,
             show_toast: document.getElementById('showToast').checked ? 1 : 0,
             
-            // Simpan Data Dinamis
+            // Data Halaman Tentang Kami
             about_text: document.getElementById('aboutText').value,
             btn1_name: document.getElementById('btn1Name').value,
-            btn1_url: document.getElementById('btn1Url').value,
-            btn2_name: document.getElementById('btn2Name').value,
-            btn2_url: document.getElementById('btn2Url').value
+            btn1_url: document.getElementById('btn1Url').value
         };
 
         fetch(FIREBASE_URL, {
@@ -152,5 +132,5 @@
 </script>
 
 </body>
-                </html>
-        
+    </html>
+    
