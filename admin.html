@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - TTS Budaya Nusantara</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f6f9; margin: 0; padding: 20px; }
+        .card { max-width: 500px; margin: 30px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { color: #8B0000; text-align: center; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { font-weight: bold; display: block; margin-bottom: 5px; color: #333; }
+        input[type="text"], textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
+        textarea { height: 80px; }
+        .checkbox-group { display: flex; align-items: center; gap: 10px; }
+        button { width: 100%; padding: 12px; background: #8B0000; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        button:hover { background: #500000; }
+        #status { text-align: center; margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>Admin Panel TTS Budaya</h2>
+    
+    <div class="form-group">
+        <label>Version Code (Angka, misal: 2):</label>
+        <input type="text" id="versionCode" placeholder="2">
+    </div>
+
+    <div class="form-group">
+        <label>URL Download APK Terbaru:</label>
+        <input type="text" id="apkUrl" placeholder="https://...">
+    </div>
+
+    <div class="form-group">
+        <label>Pesan Toast / Pengumuman:</label>
+        <textarea id="toastMsg" placeholder="Ketik pesan untuk pemain..."></textarea>
+    </div>
+
+    <div class="form-group checkbox-group">
+        <input type="checkbox" id="showToast">
+        <label for="showToast" style="margin:0;">Aktifkan Pesan Toast di Aplikasi</label>
+    </div>
+
+    <button onclick="simpanData()">Simpan & Broadcast Ke App</button>
+    <div id="status"></div>
+</div>
+
+<script>
+    // GANTI LINK DI BAWAH INI DENGAN LINK FIREBASE REALTIME DATABASE MILIKMU
+    const FIREBASE_URL = "https://updateadmin-default-rtdb.asia-southeast1.firebasedatabase.app/";
+
+    // 1. Ambil data saat web dibuka
+    window.onload = function() {
+        document.getElementById('status').innerText = "Mengecek data Firebase...";
+        fetch(FIREBASE_URL)
+            .then(response => response.json())
+            .then(data => {
+                if(data) {
+                    document.getElementById('versionCode').value = data.version_code || 1;
+                    document.getElementById('apkUrl').value = data.apk_url || "";
+                    document.getElementById('toastMsg').value = data.toast_message || "";
+                    document.getElementById('showToast').checked = (data.show_toast === 1);
+                    document.getElementById('status').innerText = "Data berhasil dimuat!";
+                    document.getElementById('status').style.color = "green";
+                }
+            })
+            .catch(err => {
+                document.getElementById('status').innerText = "Gagal mengambil data dari Firebase";
+                document.getElementById('status').style.color = "red";
+            });
+    };
+
+    // 2. Kirim data baru ke Firebase saat tombol diklik
+    function simpanData() {
+        document.getElementById('status').innerText = "Menyimpan data...";
+        
+        const payload = {
+            version_code: parseInt(document.getElementById('versionCode').value) || 1,
+            apk_url: document.getElementById('apkUrl').value,
+            toast_message: document.getElementById('toastMsg').value,
+            show_toast: document.getElementById('showToast').checked ? 1 : 0
+        };
+
+        fetch(FIREBASE_URL, {
+            method: 'PATCH', // Mengubah data di Firebase tanpa menghapus struktur lain
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('status').innerText = "✅ Berhasil Diperbarui Ke Aplikasi!";
+            document.getElementById('status').style.color = "green";
+        })
+        .catch(err => {
+            document.getElementById('status').innerText = "❌ Gagal Menyimpan!";
+            document.getElementById('status').style.color = "red";
+        });
+    }
+</script>
+
+</body>
+  </html>
+  
