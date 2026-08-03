@@ -46,7 +46,7 @@
         <label for="showToast" style="margin:0;">Aktifkan Pesan Toast di Aplikasi</label>
     </div>
 
-    <!-- SEKSI TENTANG KAMI -->
+    <!-- SEKSI TENTANG KAMI & KONTAK -->
     <h3>ℹ️ Pengaturan Halaman Tentang Kami</h3>
     <div class="form-group">
         <label>Teks Tentang Permainan (Deskripsi):</label>
@@ -61,6 +61,11 @@
     <div class="form-group">
         <label>Alamat Pengembang:</label>
         <textarea id="devAddress" placeholder="Masukkan alamat lengkap..."></textarea>
+    </div>
+
+    <div class="form-group">
+        <label>Email / Link Hubungi Kami:</label>
+        <input type="text" id="contactUrl" placeholder="Contoh: email@gmail.com ATAU https://wa.me/...">
     </div>
 
     <div class="form-group">
@@ -93,10 +98,11 @@
                     document.getElementById('toastMsg').value = data.toast_message || "";
                     document.getElementById('showToast').checked = (data.show_toast === 1);
                     
-                    // Load data Tentang Kami
+                    // Load data Tentang Kami & Kontak
                     document.getElementById('aboutText').value = data.about_text || "";
                     document.getElementById('devName').value = data.dev_name || "HomeDev";
-                    document.getElementById('devAddress').value = data.dev_address || "Jln. Mlarak Pulung, Desa Suren, Kecamatan Mlarak, Kabupaten Ponorogo";
+                    document.getElementById('devAddress').value = data.dev_address || "";
+                    document.getElementById('contactUrl').value = data.contact_url || "";
                     document.getElementById('btn1Name').value = data.btn1_name || "KUNJUNGI WEBSITE HOMEDEV";
                     document.getElementById('btn1Url').value = data.btn1_url || "https://sku9630.github.io/HomeDev";
 
@@ -120,10 +126,11 @@
             toast_message: document.getElementById('toastMsg').value,
             show_toast: document.getElementById('showToast').checked ? 1 : 0,
             
-            // Data Halaman Tentang Kami
+            // Data Halaman Tentang Kami & Kontak
             about_text: document.getElementById('aboutText').value,
             dev_name: document.getElementById('devName').value,
             dev_address: document.getElementById('devAddress').value,
+            contact_url: document.getElementById('contactUrl').value,
             btn1_name: document.getElementById('btn1Name').value,
             btn1_url: document.getElementById('btn1Url').value
         };
@@ -146,4 +153,5 @@
 </script>
 
 </body>
-</html>
+            </html>
+    
