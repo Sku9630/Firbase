@@ -12,7 +12,7 @@
         .form-group { margin-bottom: 15px; }
         label { font-weight: bold; display: block; margin-bottom: 5px; color: #333; font-size: 14px; }
         input[type="text"], textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 14px; }
-        textarea { height: 100px; resize: vertical; }
+        textarea { height: 80px; resize: vertical; }
         .checkbox-group { display: flex; align-items: center; gap: 10px; }
         button { width: 100%; padding: 12px; background: #8B0000; color: white; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 15px; }
         button:hover { background: #500000; }
@@ -54,6 +54,16 @@
     </div>
 
     <div class="form-group">
+        <label>Nama Developer:</label>
+        <input type="text" id="devName" placeholder="HomeDev">
+    </div>
+
+    <div class="form-group">
+        <label>Alamat Pengembang:</label>
+        <textarea id="devAddress" placeholder="Masukkan alamat lengkap..."></textarea>
+    </div>
+
+    <div class="form-group">
         <label>Nama Tombol Website / Promo:</label>
         <input type="text" id="btn1Name" placeholder="Contoh: KUNJUNGI WEBSITE HOMEDEV">
     </div>
@@ -68,10 +78,10 @@
 </div>
 
 <script>
-    // URL Database Firebase Kamu
+    // URL Database Firebase
     const FIREBASE_URL = "https://updateadmin-default-rtdb.asia-southeast1.firebasedatabase.app/.json";
 
-    // 1. Load Data Otomatis Saat Halaman Admin Dibuka
+    // 1. Load Data Otomatis Saat Web Dibuka
     window.onload = function() {
         document.getElementById('status').innerText = "Mengecek data Firebase...";
         fetch(FIREBASE_URL)
@@ -84,7 +94,9 @@
                     document.getElementById('showToast').checked = (data.show_toast === 1);
                     
                     // Load data Tentang Kami
-                    document.getElementById('aboutText').value = data.about_text || "TTS Budaya Nusantara adalah media edukasi interaktif berbentuk teka-teki silang yang dirancang untuk menguji sekaligus memperluas wawasan mengenai keanekaragaman budaya Indonesia.\n\nDari adat istiadat, tarian daerah, alat musik tradisional, hingga sejarah Nusantara, game ini mengajak Anda belajar budaya dengan cara yang seru dan menyenangkan!";
+                    document.getElementById('aboutText').value = data.about_text || "";
+                    document.getElementById('devName').value = data.dev_name || "HomeDev";
+                    document.getElementById('devAddress').value = data.dev_address || "Jln. Mlarak Pulung, Desa Suren, Kecamatan Mlarak, Kabupaten Ponorogo";
                     document.getElementById('btn1Name').value = data.btn1_name || "KUNJUNGI WEBSITE HOMEDEV";
                     document.getElementById('btn1Url').value = data.btn1_url || "https://sku9630.github.io/HomeDev";
 
@@ -110,6 +122,8 @@
             
             // Data Halaman Tentang Kami
             about_text: document.getElementById('aboutText').value,
+            dev_name: document.getElementById('devName').value,
+            dev_address: document.getElementById('devAddress').value,
             btn1_name: document.getElementById('btn1Name').value,
             btn1_url: document.getElementById('btn1Url').value
         };
@@ -132,5 +146,4 @@
 </script>
 
 </body>
-    </html>
-    
+</html>
