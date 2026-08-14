@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Panel - Aksara Jawa Pro</title>
-    <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body { background-color: #f8f9fa; }
@@ -12,73 +11,43 @@
     </style>
 </head>
 <body>
-
     <div class="container-fluid">
         <div class="row">
-            <!-- Sidebar -->
             <div class="col-md-3 col-lg-2 sidebar p-3">
                 <h4 class="mb-4 text-warning">Aksara Jawa Pro</h4>
-                <ul class="nav nav-pills flex-column mb-auto">
-                    <li class="nav-item">
-                        <a href="#" class="nav-link active text-white">Konfigurasi App</a>
-                    </li>
+                <ul class="nav nav-pills flex-column">
+                    <li class="nav-item"><a href="#" class="nav-link active text-white">Dashboard Admin</a></li>
                 </ul>
             </div>
-
-            <!-- Content Area -->
             <div class="col-md-9 col-lg-10 p-4">
                 <h2 class="mb-4">Pengaturan Aplikasi</h2>
-                
                 <div class="card shadow-sm p-4">
                     <form id="configForm">
                         <div class="mb-3 form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="cfgMaintenance">
                             <label class="form-check-label fw-bold" for="cfgMaintenance">Mode Maintenance</label>
                         </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Pesan Maintenance</label>
-                            <input type="text" class="form-control" id="cfgMaintenanceMsg">
-                        </div>
-
                         <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Version Code</label>
-                                <input type="number" class="form-control" id="cfgVersionCode">
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Versi Teks (misal: 1.0.0)</label>
-                                <input type="text" class="form-control" id="cfgVersion">
-                            </div>
+                            <div class="col-md-6 mb-3"><label class="form-label">Pesan Maintenance</label><input type="text" class="form-control" id="cfgMaintenanceMsg"></div>
+                            <div class="col-md-6 mb-3"><label class="form-label">URL APK Terbaru</label><input type="url" class="form-control" id="cfgApkUrl"></div>
                         </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">URL APK Terbaru</label>
-                            <input type="url" class="form-control" id="cfgApkUrl">
+                        <div class="row">
+                            <div class="col-md-6 mb-3"><label class="form-label">Version Code</label><input type="number" class="form-control" id="cfgVersionCode"></div>
+                            <div class="col-md-6 mb-3"><label class="form-label">Versi Teks</label><input type="text" class="form-control" id="cfgVersion"></div>
                         </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Pesan Toast Konversi</label>
-                            <input type="text" class="form-control" id="cfgMsgConvert">
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="form-label">Warna Aksen Utama (Hex Code)</label>
-                            <input type="color" class="form-control form-control-color" id="cfgColorAccent">
-                        </div>
-
-                        <button type="button" id="btnSave" class="btn btn-success">Simpan Perubahan</button>
+                        <hr>
+                        <h5>Konten Informasi</h5>
+                        <div class="mb-3"><label class="form-label">About App</label><textarea class="form-control" id="cfgAbout" rows="3"></textarea></div>
+                        <div class="mb-3"><label class="form-label">Contact Email/Info</label><input type="text" class="form-control" id="cfgContact"></div>
+                        <div class="mb-3"><label class="form-label">Privacy Policy Link</label><input type="url" class="form-control" id="cfgPrivacy"></div>
+                        <button type="button" id="btnSave" class="btn btn-success w-100">Simpan Semua Perubahan</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Firebase SDK (Tanpa Firebase Auth) -->
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-database-compat.js"></script>
-
-    <!-- Custom Logic Script -->
     <script src="app.js"></script>
 </body>
 </html>
