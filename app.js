@@ -48,3 +48,19 @@ document.getElementById('btnSave').addEventListener('click', () => {
         .catch(err => alert("Gagal menyimpan: " + err.message));
 });
       
+
+// ... di dalam fungsi Muat data saat halaman dibuka
+document.getElementById('cfgAbout').value = data.desc_about || "";
+document.getElementById('cfgContact').value = data.address || "";
+document.getElementById('cfgPrivacy').value = data.url_privacy || "";
+document.getElementById('cfgDeveloper').value = data.developer || ""; // Tambahkan ini
+
+// ... di dalam fungsi Simpan data
+const updatedData = {
+    // ... data lainnya
+    desc_about: document.getElementById('cfgAbout').value,
+    address: document.getElementById('cfgContact').value,
+    url_privacy: document.getElementById('cfgPrivacy').value,
+    developer: document.getElementById('cfgDeveloper').value // Tambahkan ini
+};
+  
