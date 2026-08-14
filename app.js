@@ -1,4 +1,3 @@
-// Konfigurasi Firebase Aksara Jawa Pro
 const firebaseConfig = {
   apiKey: "AIzaSyDXVb2DRV1Ka5hqOTwh6awOaXfl4yvAwfY",
   authDomain: "aksara-jawapro.firebaseapp.com",
@@ -6,59 +5,39 @@ const firebaseConfig = {
   projectId: "aksara-jawapro",
   storageBucket: "aksara-jawapro.firebasestorage.app",
   messagingSenderId: "25810250492",
-  appId: "1:25810250492:web:8428b2430e8ba3b2554579",
-  measurementId: "G-P8RNYJSRV6"
+  appId: "1:25810250492:web:8428b2430e8ba3b2554579"
 };
 
-// Inisialisasi Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-const btnSave = document.getElementById('btnSave');
+// Muat data saat halaman dibuka
+db.ref("AppConfig").once("value", snapshot => {
+    const data = snapshot.val() || {};
+    document.getElementById('cfgMaintenance').checked = (data.maintenance === "true");
+    document.getElementById('cfgMaintenanceMsg').value = data.maintenance_msg || "";
+    document.getElementById('cfgVersionCode').value = data.version_code || 1;
+    document.getElementById('cfgVersion').value = data.version || "1.0.0";
+    document.getElementById('cfgApkUrl').value = data.apk_url || "";
+    document.getElementById('cfgAbout').value = data.about || "";
+    document.getElementById('cfgContact').value = data.contact || "";
+    document.getElementById('cfgPrivacy').value = data.privacy_policy || "";
+});
 
-// 1. LANGSUNG MUAT DATA DARI FIREBASE SAAT HALAMAN DIBUKA
-loadDataFromFirebase();
-
-function loadDataFromFirebase() {
-    db.ref("AppConfig").once("value", snapshot => {
-        const data = snapshot.val() || {};
-        
-        document.getElementById('cfgMaintenance').checked = (data.maintenance === "true" || data.maintenance === true);
-        document.getElementById('cfgMaintenanceMsg').value = data.maintenance_msg || "";
-        document.getElementById('cfgVersionCode').value = data.version_code || 1;
-        document.getElementById('cfgVersion').value = data.version || "1.0.0";
-        document.getElementById('cfgApkUrl').value = data.apk_url || "";
-        document.getElementById('cfgMsgConvert').value = data.msg_convert || "";
-        document.getElementById('cfgColorAccent').value = data.color_accent || "#6D4528";
-    });
-}
-
-// 2. SIMPAN DATA KE FIREBASE SAAT TOMBOL DIKLIK
-btnSave.addEventListener('click', () => {
-    const isMaintenance = document.getElementById('cfgMaintenance').checked ? "true" : "false";
-    const maintenanceMsg = document.getElementById('cfgMaintenanceMsg').value;
-    const versionCode = parseInt(document.getElementById('cfgVersionCode').value) || 1;
-    const version = document.getElementById('cfgVersion').value;
-    const apkUrl = document.getElementById('cfgApkUrl').value;
-    const msgConvert = document.getElementById('cfgMsgConvert').value;
-    const colorAccent = document.getElementById('cfgColorAccent').value;
-
+// Simpan data
+document.getElementById('btnSave').addEventListener('click', () => {
     const updatedData = {
-        maintenance: isMaintenance,
-        maintenance_msg: maintenanceMsg,
-        version_code: versionCode,
-        version: version,
-        apk_url: apkUrl,
-        msg_convert: msgConvert,
-        color_accent: colorAccent
+        maintenance: document.getElementById('cfgMaintenance').checked ? "true" : "false",
+        maintenance_msg: document.getElementById('cfgMaintenanceMsg').value,
+        version_code: parseInt(document.getElementById('cfgVersionCode').value),
+        version: document.getElementById('cfgVersion').value,
+        apk_url: document.getElementById('cfgApkUrl').value,
+        about: document.getElementById('cfgAbout').value,
+        contact: document.getElementById('cfgContact').value,
+        privacy_policy: document.getElementById('cfgPrivacy').value
     };
 
     db.ref("AppConfig").update(updatedData)
-        .then(() => {
-            alert("Data berhasil diperbarui di Firebase!");
-        })
-        .catch(err => {
-            alert("Gagal menyimpan data: " + err.message);
-        });
+        .then(() => alert("Data berhasil disimpan ke Firebase!"))
+        .catch(err => alert("Gagal menyimpan: " + err.message));
 });
-                                 
