@@ -12,55 +12,13 @@ const firebaseConfig = {
 
 // Inisialisasi Firebase
 firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
 const db = firebase.database();
 
-// UI Elements
-const loginSection = document.getElementById('loginSection');
-const dashboardSection = document.getElementById('dashboardSection');
-const loginEmail = document.getElementById('loginEmail');
-const loginPassword = document.getElementById('loginPassword');
-const btnLogin = document.getElementById('btnLogin');
-const btnLogout = document.getElementById('btnLogout');
 const btnSave = document.getElementById('btnSave');
-const loginError = document.getElementById('loginError');
 
-// 1. CEK STATUS AUTH (LOGIN / LOGOUT)
-auth.onAuthStateChanged(user => {
-    if (user) {
-        // Jika sudah login, tampilkan dashboard
-        loginSection.classList.add('hidden');
-        dashboardSection.classList.remove('hidden');
-        loadDataFromFirebase();
-    } else {
-        // Jika belum login, tampilkan form login
-        loginSection.classList.remove('hidden');
-        dashboardSection.classList.add('hidden');
-    }
-});
+// 1. LANGSUNG MUAT DATA DARI FIREBASE SAAT HALAMAN DIBUKA
+loadDataFromFirebase();
 
-// 2. PROSES LOGIN
-btnLogin.addEventListener('click', () => {
-    const email = loginEmail.value;
-    const password = loginPassword.value;
-    
-    loginError.innerText = "";
-    
-    auth.signInWithEmailAndPassword(email, password)
-        .then(() => {
-            console.log("Login sukses!");
-        })
-        .catch(error => {
-            loginError.innerText = "Error: " + error.message;
-        });
-});
-
-// 3. PROSES LOGOUT
-btnLogout.addEventListener('click', () => {
-    auth.signOut();
-});
-
-// 4. LOAD DATA DARI FIREBASE KE FORM
 function loadDataFromFirebase() {
     db.ref("AppConfig").once("value", snapshot => {
         const data = snapshot.val() || {};
@@ -75,7 +33,7 @@ function loadDataFromFirebase() {
     });
 }
 
-// 5. SIMPAN DATA DARI FORM KE FIREBASE
+// 2. SIMPAN DATA KE FIREBASE SAAT TOMBOL DIKLIK
 btnSave.addEventListener('click', () => {
     const isMaintenance = document.getElementById('cfgMaintenance').checked ? "true" : "false";
     const maintenanceMsg = document.getElementById('cfgMaintenanceMsg').value;
@@ -103,4 +61,4 @@ btnSave.addEventListener('click', () => {
             alert("Gagal menyimpan data: " + err.message);
         });
 });
-  
+                                 
