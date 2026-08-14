@@ -14,14 +14,18 @@ const db = firebase.database();
 // Muat data saat halaman dibuka
 db.ref("AppConfig").once("value", snapshot => {
     const data = snapshot.val() || {};
+    
+    // Data Maintenance & Versi
     document.getElementById('cfgMaintenance').checked = (data.maintenance === "true");
     document.getElementById('cfgMaintenanceMsg').value = data.maintenance_msg || "";
     document.getElementById('cfgVersionCode').value = data.version_code || 1;
     document.getElementById('cfgVersion').value = data.version || "1.0.0";
     document.getElementById('cfgApkUrl').value = data.apk_url || "";
-    document.getElementById('cfgAbout').value = data.about || "";
-    document.getElementById('cfgContact').value = data.contact || "";
-    document.getElementById('cfgPrivacy').value = data.privacy_policy || "";
+    
+    // Data About, Contact, Privacy (Sesuai dengan key yang dipanggil di Sketchware)
+    document.getElementById('cfgAbout').value = data.desc_about || "";
+    document.getElementById('cfgContact').value = data.address || "";
+    document.getElementById('cfgPrivacy').value = data.url_privacy || "";
 });
 
 // Simpan data
@@ -29,15 +33,18 @@ document.getElementById('btnSave').addEventListener('click', () => {
     const updatedData = {
         maintenance: document.getElementById('cfgMaintenance').checked ? "true" : "false",
         maintenance_msg: document.getElementById('cfgMaintenanceMsg').value,
-        version_code: parseInt(document.getElementById('cfgVersionCode').value),
+        version_code: parseInt(document.getElementById('cfgVersionCode').value) || 1,
         version: document.getElementById('cfgVersion').value,
         apk_url: document.getElementById('cfgApkUrl').value,
-        about: document.getElementById('cfgAbout').value,
-        contact: document.getElementById('cfgContact').value,
-        privacy_policy: document.getElementById('cfgPrivacy').value
+        
+        // Menggunakan key yang sesuai dengan kode Sketchware Anda
+        desc_about: document.getElementById('cfgAbout').value,
+        address: document.getElementById('cfgContact').value,
+        url_privacy: document.getElementById('cfgPrivacy').value
     };
 
     db.ref("AppConfig").update(updatedData)
         .then(() => alert("Data berhasil disimpan ke Firebase!"))
         .catch(err => alert("Gagal menyimpan: " + err.message));
 });
+      
