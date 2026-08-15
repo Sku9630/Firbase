@@ -23,7 +23,7 @@
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
-        h2 {
+        h2, h3 {
             color: #6D4528;
             text-align: center;
             margin-bottom: 20px;
@@ -123,12 +123,12 @@
 
     <div class="form-group">
         <label>Nama Developer / Pembuat</label>
-        <input type="text" id="cfgDeveloper" placeholder="HomeDev / Hanacaraka Music">
+        <input type="text" id="cfgDeveloper" placeholder="HomeDev / Hanacaraka">
     </div>
 
     <div class="form-group">
         <label>Alamat Lengkap</label>
-        <input type="text" id="cfgContact" placeholder="Masukkan alamat Anda...">
+        <input type="text" id="cfgContact" placeholder="Masukkan alamat lengkap Anda...">
     </div>
 
     <div class="form-group">
@@ -145,7 +145,7 @@
 </div>
 
 <script>
-    // Konfigurasi Firebase (Sesuaikan dengan kredensial database Firebase Anda)
+    // Konfigurasi Database Firebase Anda
     const firebaseConfig = {
         databaseURL: "https://aksara-jawapro-default-rtdb.asia-southeast1.firebasedatabase.app/"
     };
@@ -155,7 +155,7 @@
     }
     const db = firebase.database();
 
-    // 1. Muat data dari Firebase saat halaman dibuka
+    // 1. Muat data dari Firebase ke Admin Panel
     db.ref("AppConfig").once("value", snapshot => {
         const data = snapshot.val() || {};
         
@@ -175,7 +175,7 @@
         alert("Gagal memuat data: " + error.message);
     });
 
-    // 2. Simpan perubahan saat tombol diklik
+    // 2. Simpan perubahan ke Firebase saat tombol diklik
     document.getElementById('btnSave').addEventListener('click', () => {
         const updatedData = {
             maintenance: document.getElementById('cfgMaintenance').checked ? "true" : "false",
@@ -202,5 +202,6 @@
 </script>
 
 </body>
-      </html>
+</html>
+</html>
       
