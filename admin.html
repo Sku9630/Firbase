@@ -1,675 +1,206 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#6d4528">
-<title>Aksara Jawa Pro — Admin Panel</title>
-
-<style>
-*{box-sizing:border-box}
-:root{
-  --primary:#6d4528;
-  --primary2:#8b5e3c;
-  --bg:#f6f3ee;
-  --card:#fff;
-  --text:#29231f;
-  --muted:#81766d;
-  --border:#e1d8cf;
-  --danger:#b3261e;
-  --success:#27733d;
-  --shadow:0 5px 18px rgba(50,35,25,.08);
-}
-body{
-  margin:0;font-family:Arial,Helvetica,sans-serif;
-  background:var(--bg);color:var(--text);
-}
-button,input,textarea,select{font:inherit}
-button{cursor:pointer}
-.app{display:flex;min-height:100vh}
-.sidebar{
-  width:250px;background:#2b211a;color:#fff;padding:18px 12px;
-  position:fixed;left:0;top:0;bottom:0;overflow-y:auto;z-index:10;
-}
-.brand{padding:12px 10px 22px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:12px}
-.brand .jawa{font-size:30px;color:#e7c59e}
-.brand h1{font-size:18px;margin:8px 0 2px}
-.brand small{color:#c8bbb0}
-.nav button{
-  width:100%;border:0;background:transparent;color:#ddd;text-align:left;
-  padding:12px 13px;border-radius:9px;margin:2px 0;font-weight:600;
-}
-.nav button:hover,.nav button.active{background:#6d4528;color:#fff}
-.main{margin-left:250px;width:calc(100% - 250px);padding:24px}
-.topbar{
-  background:var(--card);border:1px solid var(--border);border-radius:14px;
-  padding:18px 20px;display:flex;align-items:center;justify-content:space-between;
-  box-shadow:var(--shadow);margin-bottom:18px;
-}
-.topbar h2{margin:0;font-size:22px}
-.status{font-size:13px;color:var(--muted)}
-.status.ok{color:var(--success)}
-.status.err{color:var(--danger)}
-.page{display:none}
-.page.active{display:block}
-.card{
-  background:var(--card);border:1px solid var(--border);border-radius:14px;
-  padding:20px;margin-bottom:16px;box-shadow:var(--shadow)
-}
-.card h3{margin:0 0 15px;color:var(--primary)}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px}
-.field{display:flex;flex-direction:column;gap:6px}
-.field.full{grid-column:1/-1}
-label{font-size:13px;font-weight:700}
-input,textarea,select{
-  width:100%;border:1px solid var(--border);border-radius:9px;
-  padding:11px 12px;background:#fff;color:var(--text);outline:none;
-}
-textarea{min-height:110px;resize:vertical}
-input:focus,textarea:focus,select:focus{border-color:var(--primary)}
-.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
-.btn{
-  border:0;border-radius:9px;padding:10px 15px;font-weight:700;
-  background:var(--primary);color:#fff;
-}
-.btn.secondary{background:#eee5dc;color:var(--primary)}
-.btn.danger{background:#b3261e;color:#fff}
-.btn.success{background:#27733d}
-.btn.small{padding:7px 10px;font-size:12px}
-.notice{
-  border-left:4px solid var(--primary);background:#f0e7de;
-  padding:12px 14px;border-radius:6px;font-size:13px;margin-bottom:15px;
-}
-.warning{
-  border-left:4px solid #c77b00;background:#fff3d8;
-  padding:12px 14px;border-radius:6px;font-size:13px;margin-bottom:15px;
-}
-.switch-row{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:13px 0;border-bottom:1px solid var(--border)
-}
-.switch-row:last-child{border-bottom:0}
-.switch{
-  position:relative;width:48px;height:26px;display:inline-block
-}
-.switch input{opacity:0;width:0;height:0}
-.slider{
-  position:absolute;inset:0;background:#bbb;border-radius:30px;transition:.2s
-}
-.slider:before{
-  content:"";position:absolute;width:20px;height:20px;left:3px;top:3px;
-  background:#fff;border-radius:50%;transition:.2s
-}
-.switch input:checked + .slider{background:var(--primary)}
-.switch input:checked + .slider:before{transform:translateX(22px)}
-.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.stat{
-  background:var(--card);border:1px solid var(--border);border-radius:12px;
-  padding:16px;box-shadow:var(--shadow)
-}
-.stat b{display:block;font-size:24px;color:var(--primary);margin-top:5px}
-.table-wrap{overflow:auto}
-table{width:100%;border-collapse:collapse}
-th,td{padding:10px;border-bottom:1px solid var(--border);text-align:left;font-size:13px}
-th{background:#f3eee9}
-.engine-row{display:grid;grid-template-columns:120px 1fr auto;gap:8px;align-items:center;margin-bottom:8px}
-.toast{
-  position:fixed;right:20px;bottom:20px;background:#29231f;color:#fff;
-  padding:12px 16px;border-radius:9px;display:none;z-index:100;
-  box-shadow:0 5px 20px rgba(0,0,0,.2)
-}
-.toast.show{display:block}
-.empty{color:var(--muted);text-align:center;padding:25px}
-@media(max-width:900px){
-  .sidebar{width:220px}.main{margin-left:220px;width:calc(100% - 220px)}
-  .grid{grid-template-columns:1fr}.stat-grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:650px){
-  .app{display:block}.sidebar{position:relative;width:100%;height:auto}
-  .nav{display:grid;grid-template-columns:repeat(2,1fr);gap:4px}
-  .main{margin:0;width:100%;padding:12px}.topbar{position:sticky;top:0;z-index:5}
-  .stat-grid{grid-template-columns:1fr 1fr}
-  .engine-row{grid-template-columns:1fr 1fr}
-  .engine-row button{grid-column:1/-1}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Aksara Jawa Pro</title>
+    <!-- Firebase SDK (Compat Version) -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f6f3ee;
+            color: #29231f;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+        h2 {
+            color: #6D4528;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd4ca;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        textarea {
+            resize: vertical;
+            height: 80px;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .checkbox-group input {
+            width: 18px;
+            height: 18px;
+        }
+        button {
+            width: 100%;
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #1b5e20;
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid #ddd4ca;
+            margin: 20px 0;
+        }
+    </style>
 </head>
-
 <body>
-<div class="app">
 
-<aside class="sidebar">
-  <div class="brand">
-    <div class="jawa">ꦲꦤꦕꦫꦏ</div>
-    <h1>Aksara Jawa Pro</h1>
-    <small>Admin Panel • HomeDev</small>
-  </div>
+<div class="container">
+    <h2>Admin Panel Aksara Jawa Pro</h2>
+    
+    <div class="form-group checkbox-group">
+        <input type="checkbox" id="cfgMaintenance">
+        <label for="cfgMaintenance" style="margin-bottom:0; cursor:pointer;">Aktifkan Mode Pemeliharaan (Maintenance)</label>
+    </div>
 
-  <div class="nav">
-    <button class="active" data-page="dashboard">📊 Dashboard</button>
-    <button data-page="home">🏠 Home</button>
-    <button data-page="about">ℹ️ About Us</button>
-    <button data-page="contact">✉️ Contact</button>
-    <button data-page="privacy">🔒 Privacy Policy</button>
-    <button data-page="ui">🎨 Tampilan</button>
-    <button data-page="features">⚙️ Fitur</button>
-    <button data-page="engine">🔤 Engine</button>
-    <button data-page="update">📱 Update</button>
-    <button data-page="maintenance">🔧 Maintenance</button>
-  </div>
-</aside>
-
-<main class="main">
-  <div class="topbar">
-    <div>
-      <h2 id="pageTitle">Dashboard</h2>
-      <div class="status" id="firebaseStatus">Menghubungkan ke Firebase...</div>
-    </div>
-    <div class="actions" style="margin:0">
-      <button class="btn secondary small" id="reloadBtn">↻ Muat Data</button>
-      <button class="btn small" id="saveAllBtn">💾 Simpan Semua</button>
-    </div>
-  </div>
-
-  <section class="page active" id="page-dashboard">
-    <div class="notice">
-      Panel ini mengelola konfigurasi Aksara Jawa Pro melalui Firebase Realtime Database.
-      Perubahan akan dibaca oleh aplikasi setelah aplikasi melakukan sinkronisasi.
-    </div>
-    <div class="warning">
-      <b>Penting:</b> panel ini sengaja tanpa login sesuai permintaan. Jangan memberikan
-      hak tulis database secara publik. Gunakan Firebase Authentication/Cloud Functions
-      atau aturan keamanan yang membatasi penulisan admin sebelum dipakai secara publik.
-    </div>
-    <div class="stat-grid">
-      <div class="stat">Status Firebase<b id="statFirebase">—</b></div>
-      <div class="stat">Maintenance<b id="statMaintenance">—</b></div>
-      <div class="stat">Versi Terbaru<b id="statVersion">—</b></div>
-      <div class="stat">Fitur Aktif<b id="statFeatures">—</b></div>
-    </div>
-    <div class="card" style="margin-top:16px">
-      <h3>Konfigurasi Firebase</h3>
-      <p style="color:var(--muted);font-size:13px">
-        Isi konfigurasi Firebase milik project kamu pada bagian CONFIG di dalam file ini.
-        Jangan menaruh service-account/private key di halaman GitHub Pages.
-      </p>
-      <div class="grid">
-        <div class="field full">
-          <label>Database URL</label>
-          <input id="cfgDatabaseURL" readonly>
-        </div>
-        <div class="field">
-          <label>Project ID</label>
-          <input id="cfgProjectId" readonly>
-        </div>
-        <div class="field">
-          <label>Mode</label>
-          <input value="Realtime Database" readonly>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="page" id="page-home">
-    <div class="card">
-      <h3>Home</h3>
-      <div class="grid">
-        <div class="field"><label>Nama Aplikasi</label><input id="homeAppName"></div>
-        <div class="field"><label>Judul</label><input id="homeTitle"></div>
-        <div class="field full"><label>Subtitle</label><input id="homeSubtitle"></div>
-        <div class="field"><label>Judul Input</label><input id="homeInputTitle"></div>
-        <div class="field"><label>Judul Output</label><input id="homeOutputTitle"></div>
-        <div class="field full"><label>Deskripsi</label><textarea id="homeDescription"></textarea></div>
-        <div class="field"><label>Teks Tombol Konversi</label><input id="homeConvertText"></div>
-        <div class="field"><label>Teks Footer</label><input id="homeFooter"></div>
-        <div class="field"><label>Copyright</label><input id="homeCopyright"></div>
-      </div>
-      <div class="actions"><button class="btn" onclick="saveSection('home')">💾 Simpan Home</button></div>
-    </div>
-  </section>
-
-  <section class="page" id="page-about">
-    <div class="card">
-      <h3>About Us</h3>
-      <div class="grid">
-        <div class="field"><label>Judul</label><input id="aboutTitle"></div>
-        <div class="field"><label>Developer</label><input id="aboutDeveloper"></div>
-        <div class="field full"><label>Deskripsi</label><textarea id="aboutDescription"></textarea></div>
-        <div class="field full"><label>Alamat</label><textarea id="aboutAddress"></textarea></div>
-        <div class="field"><label>Versi</label><input id="aboutVersion"></div>
-        <div class="field"><label>Motto</label><input id="aboutMotto"></div>
-      </div>
-      <div class="actions"><button class="btn" onclick="saveSection('about')">💾 Simpan About</button></div>
-    </div>
-  </section>
-
-  <section class="page" id="page-contact">
-    <div class="card">
-      <h3>Contact</h3>
-      <div class="grid">
-        <div class="field"><label>Email</label><input id="contactEmail" type="email"></div>
-        <div class="field"><label>Subject Email</label><input id="contactSubject"></div>
-        <div class="field full"><label>Pesan / Keterangan</label><textarea id="contactDescription"></textarea></div>
-      </div>
-      <div class="actions"><button class="btn" onclick="saveSection('contact')">💾 Simpan Contact</button></div>
-    </div>
-  </section>
-
-  <section class="page" id="page-privacy">
-    <div class="card">
-      <h3>Privacy Policy</h3>
-      <div class="grid">
-        <div class="field full"><label>URL Privacy Policy</label><input id="privacyUrl" placeholder="https://..."></div>
-        <div class="field"><label>Judul Tombol</label><input id="privacyButtonText"></div>
-      </div>
-      <div class="actions"><button class="btn" onclick="saveSection('privacy')">💾 Simpan Privacy</button></div>
-    </div>
-  </section>
-
-  <section class="page" id="page-ui">
-    <div class="card">
-      <h3>Tampilan</h3>
-      <div class="grid">
-        <div class="field"><label>Warna Utama</label><input id="uiPrimaryColor" type="color"></div>
-        <div class="field"><label>Background Terang</label><input id="uiLightBackground" type="color"></div>
-        <div class="field"><label>Background Gelap</label><input id="uiDarkBackground" type="color"></div>
-        <div class="field"><label>Warna Tombol</label><input id="uiButtonColor" type="color"></div>
-        <div class="field"><label>Dark Mode Default</label>
-          <select id="uiDarkMode"><option value="false">OFF</option><option value="true">ON</option></select>
-        </div>
-        <div class="field"><label>Logo URL (opsional)</label><input id="uiLogoUrl"></div>
-      </div>
-      <div class="actions"><button class="btn" onclick="saveSection('ui')">💾 Simpan Tampilan</button></div>
-    </div>
-  </section>
-
-  <section class="page" id="page-features">
-    <div class="card">
-      <h3>Feature Switch</h3>
-      <div class="switch-row"><span>Konverter</span><label class="switch"><input id="featureConverter" type="checkbox"><span class="slider"></span></label></div>
-      <div class="switch-row"><span>Copy</span><label class="switch"><input id="featureCopy" type="checkbox"><span class="slider"></span></label></div>
-      <div class="switch-row"><span>Share</span><label class="switch"><input id="featureShare" type="checkbox"><span class="slider"></span></label></div>
-      <div class="switch-row"><span>Dark Mode</span><label class="switch"><input id="featureDarkMode" type="checkbox"><span class="slider"></span></label></div>
-      <div class="switch-row"><span>About Us</span><label class="switch"><input id="featureAbout" type="checkbox"><span class="slider"></span></label></div>
-      <div class="switch-row"><span>Contact</span><label class="switch"><input id="featureContact" type="checkbox"><span class="slider"></span></label></div>
-      <div class="switch-row"><span>Privacy Policy</span><label class="switch"><input id="featurePrivacy" type="checkbox"><span class="slider"></span></label></div>
-      <div class="switch-row"><span>Update Checker</span><label class="switch"><input id="featureUpdate" type="checkbox"><span class="slider"></span></label></div>
-      <div class="actions"><button class="btn" onclick="saveSection('features')">💾 Simpan Fitur</button></div>
-    </div>
-  </section>
-
-  <section class="page" id="page-engine">
-    <div class="card">
-      <h3>Engine Aksara Jawa</h3>
-      <p style="font-size:13px;color:var(--muted)">
-        Data di bawah ini adalah tabel remote. Aplikasi harus diprogram untuk membaca
-        node engine ini agar perubahan benar-benar memengaruhi transliterasi.
-      </p>
-      <h4>Konsonan</h4>
-      <div id="engineRows"></div>
-      <div class="actions">
-        <button class="btn secondary" onclick="addEngineRow()">＋ Tambah</button>
-        <button class="btn" onclick="saveEngine()">💾 Simpan Engine</button>
-      </div>
-    </div>
-    <div class="card">
-      <h3>Sandhangan / Vokal</h3>
-      <div class="grid">
-        <div class="field"><label>a</label><input id="vowelA"></div>
-        <div class="field"><label>i</label><input id="vowelI"></div>
-        <div class="field"><label>u</label><input id="vowelU"></div>
-        <div class="field"><label>e</label><input id="vowelE"></div>
-        <div class="field"><label>o</label><input id="vowelO"></div>
-        <div class="field"><label>pangkon</label><input id="vowelPangkon"></div>
-      </div>
-      <div class="actions"><button class="btn" onclick="saveVowels()">💾 Simpan Vokal</button></div>
-    </div>
-  </section>
-
-  <section class="page" id="page-update">
-    <div class="card">
-      <h3>Update Aplikasi</h3>
-      <div class="grid">
-        <div class="field"><label>Versi Terbaru</label><input id="updateVersion" placeholder="1.1.0"></div>
-        <div class="field"><label>URL APK</label><input id="updateUrl" placeholder="https://..."></div>
-        <div class="field full"><label>Pesan Update</label><textarea id="updateMessage"></textarea></div>
-        <div class="field"><label>Wajib Update</label>
-          <select id="updateForce"><option value="false">OFF</option><option value="true">ON</option></select>
-        </div>
-        <div class="field"><label>Aktifkan Checker</label>
-          <select id="updateEnabled"><option value="true">ON</option><option value="false">OFF</option></select>
-        </div>
-      </div>
-      <div class="actions"><button class="btn" onclick="saveSection('update')">💾 Simpan Update</button></div>
-    </div>
-  </section>
-
-  <section class="page" id="page-maintenance">
-    <div class="card">
-      <h3>Maintenance Mode</h3>
-      <div class="switch-row">
-        <span>Maintenance Aktif</span>
-        <label class="switch"><input id="maintenanceEnabled" type="checkbox"><span class="slider"></span></label>
-      </div>
-      <div class="field" style="margin-top:15px">
+    <div class="form-group">
         <label>Pesan Maintenance</label>
-        <textarea id="maintenanceMessage"></textarea>
-      </div>
-      <div class="actions"><button class="btn" onclick="saveSection('maintenance')">💾 Simpan Maintenance</button></div>
+        <textarea id="cfgMaintenanceMsg" placeholder="Aplikasi sedang dalam peningkatan sistem."></textarea>
     </div>
-  </section>
 
-</main>
+    <hr>
+
+    <div class="form-group">
+        <label>Version Code (Angka, misal: 2)</label>
+        <input type="text" id="cfgVersionCode">
+    </div>
+
+    <div class="form-group">
+        <label>Versi Teks (misal: Versi 2.0.0)</label>
+        <input type="text" id="cfgVersion">
+    </div>
+
+    <div class="form-group">
+        <label>Link Download APK (Update)</label>
+        <input type="text" id="cfgApkUrl" placeholder="https://play.google.com/store/apps/...">
+    </div>
+
+    <hr>
+
+    <h3>Konten Informasi (About Us, Kontak & Alamat)</h3>
+
+    <div class="form-group">
+        <label>Tentang Aplikasi (About App)</label>
+        <textarea id="cfgAbout"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label>Nama Developer / Pembuat</label>
+        <input type="text" id="cfgDeveloper" placeholder="HomeDev / Hanacaraka Music">
+    </div>
+
+    <div class="form-group">
+        <label>Alamat Lengkap</label>
+        <input type="text" id="cfgContact" placeholder="Masukkan alamat Anda...">
+    </div>
+
+    <div class="form-group">
+        <label>Kontak (Email atau No. WhatsApp)</label>
+        <input type="text" id="cfgEmail" placeholder="klipsuren@gmail.com atau 628123456789">
+    </div>
+
+    <div class="form-group">
+        <label>Link Privacy Policy</label>
+        <input type="text" id="cfgPrivacy" placeholder="https://jagotheme.blogspot.com/">
+    </div>
+
+    <button id="btnSave">Simpan Semua Perubahan</button>
 </div>
 
-<div class="toast" id="toast"></div>
-
-<!-- Firebase SDK -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-  getDatabase, ref, get, set, update
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-/*
-============================================================
- FIREBASE CONFIG
- GANTI DENGAN CONFIG PROJECT FIREBASE KAMU
- Firebase Console > Project settings > Your apps > Web app
-============================================================
-*/
-const firebaseConfig = {
-  apiKey: "AIzaSyDXVb2DRV1Ka5hqOTwh6aw0Xfl4yAwfY",
-  authDomain: "aksara-jawapro.firebaseapp.com",
-  databaseURL: "https://aksara-jawapro-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "aksara-jawapro",
-  storageBucket: "aksara-jawapro.firebasestorage.app",
-  messagingSenderId: "2581025492",
-  appId: "1:2581025492:web:8428b2430e8ba3b2554579",
-  measurementId: "G-P8NJRJSRV6"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-window.firebaseDB = db;
-window.firebaseRef = ref;
-window.firebaseGet = get;
-window.firebaseSet = set;
-window.firebaseUpdate = update;
-
-document.getElementById("cfgDatabaseURL").value = firebaseConfig.databaseURL;
-document.getElementById("cfgProjectId").value = firebaseConfig.projectId;
-
-const statusEl = document.getElementById("firebaseStatus");
-
-function showToast(message, error=false){
-  const t=document.getElementById("toast");
-  t.textContent=message;
-  t.style.background=error ? "#b3261e" : "#29231f";
-  t.classList.add("show");
-  setTimeout(()=>t.classList.remove("show"),2800);
-}
-window.showToast=showToast;
-
-function val(id){
-  return document.getElementById(id).value;
-}
-function setVal(id,v){
-  const e=document.getElementById(id);
-  if(e) e.value = v ?? "";
-}
-function boolVal(id){
-  return document.getElementById(id).checked;
-}
-function setBool(id,v){
-  const e=document.getElementById(id);
-  if(e) e.checked=!!v;
-}
-function selectBool(id,v){
-  const e=document.getElementById(id);
-  if(e) e.value=String(!!v);
-}
-
-async function loadAll(){
-  try{
-    statusEl.textContent="Mengambil data Firebase...";
-    statusEl.className="status";
-
-    const snap=await get(ref(db,"/"));
-    const data=snap.exists()?snap.val():{};
-
-    loadHome(data.home||{});
-    loadAbout(data.about||{});
-    loadContact(data.contact||{});
-    loadPrivacy(data.privacy||{});
-    loadUI(data.ui||{});
-    loadFeatures(data.features||{});
-    loadEngine(data.engine||{});
-    loadUpdate(data.update||{});
-    loadMaintenance(data.maintenance||{});
-
-    statusEl.textContent="● Firebase terhubung";
-    statusEl.className="status ok";
-    updateStats(data);
-
-  }catch(err){
-    console.error(err);
-    statusEl.textContent="● Gagal terhubung / Rules menolak";
-    statusEl.className="status err";
-    showToast("Gagal membaca Firebase: "+err.message,true);
-  }
-}
-
-function loadHome(d){
-  setVal("homeAppName",d.app_name||"Aksara Jawa Pro");
-  setVal("homeTitle",d.title||"Aksara Jawa Pro");
-  setVal("homeSubtitle",d.subtitle||"Konversi Latin ke Aksara Jawa");
-  setVal("homeInputTitle",d.input_title||"Teks Latin");
-  setVal("homeOutputTitle",d.output_title||"Hasil Aksara Jawa");
-  setVal("homeDescription",d.description||"");
-  setVal("homeConvertText",d.convert_text||"KONVERSI");
-  setVal("homeFooter",d.footer||"Melestarikan budaya Jawa melalui teknologi.");
-  setVal("homeCopyright",d.copyright||"© 2026 Aksara Jawa Pro");
-}
-function loadAbout(d){
-  setVal("aboutTitle",d.title||"Tentang Aksara Jawa Pro");
-  setVal("aboutDeveloper",d.developer||"HomeDev");
-  setVal("aboutDescription",d.description||"");
-  setVal("aboutAddress",d.address||"Jln. Mlarak Pulung\nDesa Suren, Kecamatan Mlarak\nPonorogo");
-  setVal("aboutVersion",d.version||"1.0");
-  setVal("aboutMotto",d.motto||"Melestarikan budaya Jawa melalui teknologi.");
-}
-function loadContact(d){
-  setVal("contactEmail",d.email||"klipsuren@gmail.com");
-  setVal("contactSubject",d.subject||"Aksara Jawa Pro");
-  setVal("contactDescription",d.description||"");
-}
-function loadPrivacy(d){
-  setVal("privacyUrl",d.url||"https://www.google.com");
-  setVal("privacyButtonText",d.button_text||"PRIVACY POLICY");
-}
-function loadUI(d){
-  setVal("uiPrimaryColor",d.primary_color||"#6d4528");
-  setVal("uiLightBackground",d.light_background||"#f6f3ee");
-  setVal("uiDarkBackground",d.dark_background||"#121212");
-  setVal("uiButtonColor",d.button_color||"#6d4528");
-  selectBool("uiDarkMode",d.dark_mode||false);
-  setVal("uiLogoUrl",d.logo_url||"");
-}
-function loadFeatures(d){
-  setBool("featureConverter",d.converter!==false);
-  setBool("featureCopy",d.copy!==false);
-  setBool("featureShare",d.share!==false);
-  setBool("featureDarkMode",d.dark_mode!==false);
-  setBool("featureAbout",d.about!==false);
-  setBool("featureContact",d.contact!==false);
-  setBool("featurePrivacy",d.privacy!==false);
-  setBool("featureUpdate",d.update!==false);
-}
-const defaultEngine={
-  h:"ꦲ",n:"ꦤ",c:"ꦕ",r:"ꦫ",k:"ꦏ",d:"ꦢ",t:"ꦠ",s:"ꦱ",
-  w:"ꦮ",l:"ꦭ",p:"ꦥ",dh:"ꦝ",j:"ꦗ",y:"ꦪ",ny:"ꦚ",m:"ꦩ",
-  g:"ꦒ",b:"ꦧ",th:"ꦛ",ng:"ꦔ",f:"ꦥ꦳",v:"ꦮ꦳",z:"ꦗ꦳",kh:"ꦏ꦳",gh:"ꦒ꦳"
-};
-function loadEngine(d){
-  const e=Object.keys(d.consonants||{}).length ? d.consonants : defaultEngine;
-  const box=document.getElementById("engineRows");
-  box.innerHTML="";
-  Object.entries(e).forEach(([latin,jawa])=>addEngineRow(latin,jawa));
-  const v=d.vowels||{};
-  setVal("vowelA",v.a||"");
-  setVal("vowelI",v.i||"ꦶ");
-  setVal("vowelU",v.u||"ꦸ");
-  setVal("vowelE",v.e||"ꦺ");
-  setVal("vowelO",v.o||"ꦺꦴ");
-  setVal("vowelPangkon",v.pangkon||"꧀");
-}
-function addEngineRow(latin="",jawa=""){
-  const row=document.createElement("div");
-  row.className="engine-row";
-  row.innerHTML=
-    `<input class="engLatin" placeholder="Latin" value="${escapeHtml(latin)}">
-     <input class="engJawa" placeholder="Aksara Jawa" value="${escapeHtml(jawa)}">
-     <button class="btn danger small" type="button">Hapus</button>`;
-  row.querySelector("button").onclick=()=>row.remove();
-  document.getElementById("engineRows").appendChild(row);
-}
-window.addEngineRow=addEngineRow;
-
-function loadUpdate(d){
-  setVal("updateVersion",d.version||"1.0.0");
-  setVal("updateUrl",d.url||"");
-  setVal("updateMessage",d.message||"Versi terbaru tersedia.");
-  selectBool("updateForce",d.force_update||false);
-  selectBool("updateEnabled",d.enabled!==false);
-}
-function loadMaintenance(d){
-  setBool("maintenanceEnabled",d.enabled===true);
-  setVal("maintenanceMessage",d.message||"Aplikasi sedang dalam pemeliharaan. Silakan coba kembali nanti.");
-}
-function updateStats(d){
-  document.getElementById("statFirebase").textContent="ONLINE";
-  document.getElementById("statMaintenance").textContent=d.maintenance?.enabled?"ON":"OFF";
-  document.getElementById("statVersion").textContent=d.update?.version||"1.0.0";
-  const f=d.features||{};
-  const keys=["converter","copy","share","dark_mode","about","contact","privacy","update"];
-  document.getElementById("statFeatures").textContent=keys.filter(k=>f[k]!==false).length+"/"+keys.length;
-}
-
-window.saveSection=async function(section){
-  try{
-    let data={};
-    if(section==="home"){
-      data={
-        app_name:val("homeAppName"),title:val("homeTitle"),subtitle:val("homeSubtitle"),
-        input_title:val("homeInputTitle"),output_title:val("homeOutputTitle"),
-        description:val("homeDescription"),convert_text:val("homeConvertText"),
-        footer:val("homeFooter"),copyright:val("homeCopyright")
-      };
-    }
-    if(section==="about"){
-      data={
-        title:val("aboutTitle"),developer:val("aboutDeveloper"),
-        description:val("aboutDescription"),address:val("aboutAddress"),
-        version:val("aboutVersion"),motto:val("aboutMotto")
-      };
-    }
-    if(section==="contact"){
-      data={email:val("contactEmail"),subject:val("contactSubject"),description:val("contactDescription")};
-    }
-    if(section==="privacy"){
-      data={url:val("privacyUrl"),button_text:val("privacyButtonText")};
-    }
-    if(section==="ui"){
-      data={
-        primary_color:val("uiPrimaryColor"),
-        light_background:val("uiLightBackground"),
-        dark_background:val("uiDarkBackground"),
-        button_color:val("uiButtonColor"),
-        dark_mode:val("uiDarkMode")==="true",
-        logo_url:val("uiLogoUrl")
-      };
-    }
-    if(section==="features"){
-      data={
-        converter:boolVal("featureConverter"),copy:boolVal("featureCopy"),
-        share:boolVal("featureShare"),dark_mode:boolVal("featureDarkMode"),
-        about:boolVal("featureAbout"),contact:boolVal("featureContact"),
-        privacy:boolVal("featurePrivacy"),update:boolVal("featureUpdate")
-      };
-    }
-    if(section==="update"){
-      data={
-        version:val("updateVersion"),url:val("updateUrl"),
-        message:val("updateMessage"),force_update:val("updateForce")==="true",
-        enabled:val("updateEnabled")==="true"
-      };
-    }
-    if(section==="maintenance"){
-      data={
-        enabled:boolVal("maintenanceEnabled"),
-        message:val("maintenanceMessage")
-      };
-    }
-    await set(ref(db,"/"+section),data);
-    showToast(section+" berhasil disimpan");
-    await loadAll();
-  }catch(err){
-    console.error(err);
-    showToast("Gagal menyimpan: "+err.message,true);
-  }
-};
-
-window.saveEngine=async function(){
-  try{
-    const rows=[...document.querySelectorAll(".engine-row")];
-    const consonants={};
-    rows.forEach(r=>{
-      const l=r.querySelector(".engLatin").value.trim();
-      const j=r.querySelector(".engJawa").value;
-      if(l) consonants[l]=j;
-    });
-    const vowels={
-      a:val("vowelA"),i:val("vowelI"),u:val("vowelU"),
-      e:val("vowelE"),o:val("vowelO"),pangkon:val("vowelPangkon")
+<script>
+    // Konfigurasi Firebase (Sesuaikan dengan kredensial database Firebase Anda)
+    const firebaseConfig = {
+        databaseURL: "https://aksara-jawapro-default-rtdb.asia-southeast1.firebasedatabase.app/"
     };
-    await update(ref(db,"/engine"),{consonants,vowels});
-    showToast("Engine berhasil disimpan");
-  }catch(err){
-    showToast("Gagal menyimpan engine: "+err.message,true);
-  }
-};
-window.saveVowels=async function(){await saveEngine()};
 
-window.saveAll=async function(){
-  for(const s of ["home","about","contact","privacy","ui","features","update","maintenance"]){
-    await saveSection(s);
-  }
-  await saveEngine();
-  showToast("Semua konfigurasi selesai disimpan");
-};
+    if (!firebase.apps.length) {
+        firebase.initializeApp(firebaseConfig);
+    }
+    const db = firebase.database();
 
-function escapeHtml(s){
-  return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
-}
+    // 1. Muat data dari Firebase saat halaman dibuka
+    db.ref("AppConfig").once("value", snapshot => {
+        const data = snapshot.val() || {};
+        
+        document.getElementById('cfgMaintenance').checked = (data.maintenance === "true");
+        document.getElementById('cfgMaintenanceMsg').value = data.maintenance_msg || "";
+        document.getElementById('cfgVersionCode').value = data.version_code || 1;
+        document.getElementById('cfgVersion').value = data.version || "1.0.0";
+        document.getElementById('cfgApkUrl').value = data.apk_url || "";
+        
+        // Konten Informasi & About Us
+        document.getElementById('cfgAbout').value = data.desc_about || "";
+        document.getElementById('cfgDeveloper').value = data.developer || "";
+        document.getElementById('cfgContact').value = data.address || "";
+        document.getElementById('cfgEmail').value = data.email || "";
+        document.getElementById('cfgPrivacy').value = data.url_privacy || "";
+    }, error => {
+        alert("Gagal memuat data: " + error.message);
+    });
 
-document.querySelectorAll(".nav button").forEach(btn=>{
-  btn.addEventListener("click",()=>{
-    document.querySelectorAll(".nav button").forEach(b=>b.classList.remove("active"));
-    btn.classList.add("active");
-    const page=btn.dataset.page;
-    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-    document.getElementById("page-"+page).classList.add("active");
-    document.getElementById("pageTitle").textContent=btn.textContent.replace(/^[^\s]+\s/,"");
-    window.scrollTo({top:0,behavior:"smooth"});
-  });
-});
+    // 2. Simpan perubahan saat tombol diklik
+    document.getElementById('btnSave').addEventListener('click', () => {
+        const updatedData = {
+            maintenance: document.getElementById('cfgMaintenance').checked ? "true" : "false",
+            maintenance_msg: document.getElementById('cfgMaintenanceMsg').value,
+            version_code: parseInt(document.getElementById('cfgVersionCode').value) || 1,
+            version: document.getElementById('cfgVersion').value,
+            apk_url: document.getElementById('cfgApkUrl').value,
+            
+            desc_about: document.getElementById('cfgAbout').value,
+            developer: document.getElementById('cfgDeveloper').value,
+            address: document.getElementById('cfgContact').value,
+            email: document.getElementById('cfgEmail').value,
+            url_privacy: document.getElementById('cfgPrivacy').value
+        };
 
-document.getElementById("reloadBtn").addEventListener("click",loadAll);
-document.getElementById("saveAllBtn").addEventListener("click",saveAll);
-
-loadAll();
+        db.ref("AppConfig").update(updatedData)
+            .then(() => {
+                alert("Data berhasil disimpan ke Firebase! Perubahan akan otomatis muncul di aplikasi.");
+            })
+            .catch(err => {
+                alert("Gagal menyimpan: " + err.message);
+            });
+    });
 </script>
+
 </body>
-</html>
+      </html>
+      
